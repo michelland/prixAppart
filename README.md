@@ -1,0 +1,12 @@
+descripteurs
+- int arrondissement
+- int nombre de pièces
+- boolean meublé
+- boolean balcon
+- int etage
+- boolean parking
+- float² surface
+- boolean cuisine equipée
+- boolean cave
+- string standing
+- boolean ascenseur
