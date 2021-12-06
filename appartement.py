@@ -1,6 +1,6 @@
 class Appartement:
 
-    def __init__(self, descripteurs, label):
+    def __init__(self, descripteurs):
         self.arrondissement = descripteurs[0]
         self.nb_pieces = descripteurs[1]
         self.meuble = descripteurs[2]
@@ -9,11 +9,10 @@ class Appartement:
         self.parking = descripteurs[5]
         self.surface = descripteurs[6]
         self.cuisine_equipe = descripteurs[7]
-        self.cave = descripteurs[8]
-        self.standing = descripteurs[9]
-        self.ascenseur = descripteurs[10]
-
-        self.prix = label
+        self.standing = descripteurs[8]
+        self.ascenseur = descripteurs[9]
+        self.cave = descripteurs[10]
+        self.prix = descripteurs[11]
 
     def getDescripteurs(self):
         return [self.arrondissement, self.nb_pieces, self.meuble,
