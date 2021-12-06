@@ -1,0 +1,18 @@
+Arrondissement,Nombre_pieces,meuble,balcon,etage,parking,surface,cuisine_equipee,Standing,Ascenseur,cave,prix
+8,2,False,1,0,1,43,True,Bon,False,False,750
+9,1,False,0,5,0,31.57,False,Vivable,True,False,500
+7,3,True,2,1,1,66.97,True,Bon,True,True,1350
+1,7,False,1,2,0,230,True,Bon,True,False,2445
+8,2,False,1,3,1,42.4,False,Moyen,True,False,700
+1,3,True,1,1,1,98,True,Tres bon,False,False,1800
+1,2,True,0,4,1,55,True,Tres bon,True,False,1270
+6,4,False,0,3,0,123.15,True,Bon,True,False,2095
+3,2,False,0,1,0,54,False,Moyen,False,False,700
+1,3,True,0,2,0,64,True,Tres bon,False,False,1400
+4,3,True,1,7,0,62.18,True,Tres bon,True,True,1795
+6,3,True,1,5,1,104,True,Tres bon,True,False,2600
+3,3,True,0,2,0,60,True,Bon,True,False,1528
+8,3,True,1,2,0,66,True,Bon,True,True,990
+2,6,True,0,1,1,288,True,Tres bon,True,False,5575
+2,1,False,0,5,0,43,True,Moyen,False,False,710
+3,3,False,0,2,1,72,True,Bon,False,True,1440
