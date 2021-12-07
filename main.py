@@ -9,12 +9,11 @@ from appartement import Appartement
 POIDS = {
     "meuble" : 100,
     "balcon" : 50,
-    "étage" : 10,
+    "etage" : 10,
     "parking" : 50,
     "surface" : 100,
     "cuisine_equipe" : 20,
     "standing" : 100,
-    "ascenseur" : 50,
     "cave" : 20,
 
 
@@ -60,6 +59,23 @@ def rememoration(cible, root):
 
     return list_appart_similaires
 
+def convertStanding(valeur):
+    if (valeur == 'Vivable'):
+        return 0
+    elif (valeur == 'Moyen'):
+        return 1
+    elif (valeur == 'Bon'):
+        return 2
+    elif (valeur == 'Tres bon'):
+        return 3
+
+# Si ascenseur alors etage positif, sinon etage négatif
+def convertEtageAscenseur(etage, ascenseur):
+    if not(ascenseur):
+        return -etage
+    else:
+        return etage
+
 def computeDelta(attribut, valeur_source, valeur_cible):
     if attribut == 'meuble' or attribut == 'cuisine_equipe' or attribut == 'cave':
         src = 1 if valeur_source else 0
@@ -67,19 +83,21 @@ def computeDelta(attribut, valeur_source, valeur_cible):
         return (src - cible)*POIDS[attribut]
 
     # TODO:finir cette fonction
-    """
-    elif attribut = standing
-        gérer catégorie
-    elif attribut = etage
-        gérer etage + ascenseuel
-    else
-        cas normaux
+
+    elif attribut == 'standing':
+        src = convertStanding(valeur_source)
+        cible = convertStanding(valeur_cible)
+        return (src - cible)*POIDS[attribut]
+    elif attribut == 'etage':
+        return (valeur_source - valeur_cible)*POIDS[attribut]
+    else:
+        return (valeur_source - valeur_cible)*POIDS[attribut]
     
     
     
     
     
-    """
+
 # TODO Ecrire fonction calculant delta entre deux appartements, en faisant la somme des deltas
 if __name__ == '__main__':
     root = Node('{}')
