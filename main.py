@@ -6,18 +6,20 @@ from anytree.exporter import DotExporter
 # import graphviz
 from appartement import Appartement
 
+# Utilisateur, Debug
+MODE = "Debug"
+
 POIDS = {
     "meuble" : 100,
     "balcon" : 50,
     "etage" : 10,
     "parking" : 50,
-    "surface" : 100,
+    "surface" : 20,
     "cuisine_equipe" : 20,
     "standing" : 100,
     "cave" : 20,
-
-
 }
+
 def init_base_cas (root, df):
 
     # On crée les différentes feuilles de notre arbre à partir des différents cas
@@ -49,9 +51,9 @@ def init_base_cas (root, df):
 
 # Renvoi la liste des appartements similaire à l'appartement en paramètre
 def rememoration(cible, root):
-    arrondissement = cible.arrondissement
+    arrondissement = cible.DESCRIPTEURS["arrondissement"]
     node_arrondissement = [child for child in root.children if child.name == arrondissement][0]
-    nb_pieces = cible.nb_pieces
+    nb_pieces = cible.DESCRIPTEURS["nb_pieces"]
     node_piece = [child for child in node_arrondissement.children if child.name == nb_pieces][0]
     list_appart_similaires = []
     for child in node_piece.children:
@@ -59,62 +61,88 @@ def rememoration(cible, root):
 
     return list_appart_similaires
 
-def convertStanding(valeur):
-    if (valeur == 'Vivable'):
-        return 0
-    elif (valeur == 'Moyen'):
-        return 1
-    elif (valeur == 'Bon'):
-        return 2
-    elif (valeur == 'Tres bon'):
-        return 3
 
-# Si ascenseur alors etage positif, sinon etage négatif
-def convertEtageAscenseur(etage, ascenseur):
-    if not(ascenseur):
-        return -etage
+# Calcul le delta de prix entre l'appartement cible et l'appartement source
+def adaptation(source, cible):
+    src = source.DESCRIPTEURS
+    target = cible.DESCRIPTEURS
+    delta = 0
+    for a in POIDS.keys():
+        sum = (target[a] - src[a]) * POIDS[a]
+        print(sum)
+        delta += sum
+    return source.DESCRIPTEURS["prix"] + delta
+
+
+def main():
+
+    # Chargement des données et remplissage de la base de cas
+    df = pd.read_csv(filepath_or_buffer='Appartement.csv', sep=',')
+    root = Node('{}')
+    init_base_cas(root, df)
+
+    # Création d'un appartement cible
+    if MODE == "Utilisateur":
+        print("Entrer les descripteurs de l'appartement pour obtenir une estimation de son prix")
+        descripteurs = []
+        descripteurs.append(input("Arrondissement : entier de 1 à 9"))
+        descripteurs.append(input("Nombre_pieces : entier de 1 à 7"))
+        descripteurs.append(input("Meuble : 1 ou 0"))
+        descripteurs.append(input("Balcon : entier"))
+        descripteurs.append(input("Etage : entier"))
+        descripteurs.append(input("Parking : 1 ou 0"))
+        descripteurs.append(input("Surface : float"))
+        descripteurs.append(input("Cuisine_equipee : 1 ou 0"))
+        descripteurs.append(input("Standing : Vivable, Moyen, Bon, Tres bon"))
+        descripteurs.append(input("Ascenseur : 1 ou 0"))
+        descripteurs.append(input("Cave : 1 ou 0"))
+        descripteurs.append(0)
+
     else:
-        return etage
+        descripteurs = [8,2,1,1,4,1,43,1,'Bon',1,0,0]
 
-def computeDelta(attribut, valeur_source, valeur_cible):
-    if attribut == 'meuble' or attribut == 'cuisine_equipe' or attribut == 'cave':
-        src = 1 if valeur_source else 0
-        cible = 1 if valeur_cible else 0
-        return (src - cible)*POIDS[attribut]
+    cible = Appartement(descripteurs)
 
-    # TODO:finir cette fonction
-
-    elif attribut == 'standing':
-        src = convertStanding(valeur_source)
-        cible = convertStanding(valeur_cible)
-        return (src - cible)*POIDS[attribut]
-    elif attribut == 'etage':
-        return (valeur_source - valeur_cible)*POIDS[attribut]
+    # Rememoration et adaptation
+    list = rememoration(cible, root)
+    if len(list) == 0:
+        print("Aucun appartement comparable trouvé")
     else:
-        return (valeur_source - valeur_cible)*POIDS[attribut]
-    
-    
+        print(f"Le prix de l'appartement est estimé à {adaptation(list[0], cible)}€")
+
+
+
     
     
     
 
 # TODO Ecrire fonction calculant delta entre deux appartements, en faisant la somme des deltas
 if __name__ == '__main__':
-    root = Node('{}')
-    df = pd.read_csv(filepath_or_buffer='Appartement.csv', sep=',')
-    init_base_cas(root, df)
-    descripteurs = []
-    for column in df.columns:
-        descripteurs.append(df[column][0])
-    appart = Appartement(descripteurs)
-    list = rememoration(appart,root)
-    print(len(list))
-    print(list[0].arrondissement)
-    print(list[0].nb_pieces)
-    print(f"appart : {appart.arrondissement}, {appart.nb_pieces}")
-    print(f"appart_similaire : {list[0].arrondissement}, {list[0].nb_pieces}, {list[0].etage}")
-    print(f"appart_similaire2 : {list[1].arrondissement}, {list[1].nb_pieces}, {list[1].etage}")
-    print("delta meuble", computeDelta("meuble", True, False))
+
+    main()
+    # root = Node('{}')
+    # df = pd.read_csv(filepath_or_buffer='Appartement.csv', sep=',')
+    # print(df)
+    # init_base_cas(root, df)
+    # descripteurs = []
+    # descripteurs2 = []
+    # for column in df.columns:
+    #     descripteurs.append(df[column][0])
+    # appart = Appartement(descripteurs)
+    # for column in df.columns:
+    #     descripteurs2.append(df[column][1])
+    # appart2 = Appartement(descripteurs2)
+    # print(adaptation(appart,appart2))
+    # list = rememoration(appart,root)
+
+
+
+    # print(len(list))
+    # print(list[0].arrondissement)
+    # print(list[0].nb_pieces)
+    # print(f"appart : {appart.arrondissement}, {appart.nb_pieces}")
+    # print(f"appart_similaire : {list[0].arrondissement}, {list[0].nb_pieces}, {list[0].etage}")
+    # print(f"appart_similaire2 : {list[1].arrondissement}, {list[1].nb_pieces}, {list[1].etage}")
 
 
     """ # Le troisième noeud correspond à la surface (on fait par tranche de 10 m2)

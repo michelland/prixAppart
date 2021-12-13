@@ -1,26 +1,31 @@
+
+def convertStanding(valeur):
+    if (valeur == 'Vivable'):
+        return 0
+    elif (valeur == 'Moyen'):
+        return 1
+    elif (valeur == 'Bon'):
+        return 2
+    elif (valeur == 'Tres bon'):
+        return 3
+
+
 class Appartement:
 
     def __init__(self, descripteurs):
-        self.arrondissement = descripteurs[0]
-        self.nb_pieces = descripteurs[1]
-        self.meuble = descripteurs[2]
-        self.balcon = descripteurs[3]
-        self.etage = descripteurs[4]
-        self.parking = descripteurs[5]
-        self.surface = descripteurs[6]
-        self.cuisine_equipe = descripteurs[7]
-        self.standing = descripteurs[8]
-        self.ascenseur = descripteurs[9]
-        self.cave = descripteurs[10]
-        self.prix = descripteurs[11]
 
-    def getDescripteurs(self):
-        return [self.arrondissement, self.nb_pieces, self.meuble,
-                self.balcon, self.etage, self.parking,
-                self.surface, self.cuisine_equipe, self.cave,
-                self.standing, self.ascenseur]
+        self.DESCRIPTEURS = {
+            "arrondissement": descripteurs[0],
+            "nb_pieces": descripteurs[1],
+            "meuble": int(descripteurs[2]),
+            "balcon": descripteurs[3],
+            "etage": descripteurs[4] if descripteurs[9] else -descripteurs[4], #par convention, étage positif si ascenseur, négatif sinon
+            "parking": descripteurs[5],
+            "surface": descripteurs[6],
+            "cuisine_equipe": int(descripteurs[7]),
+            "standing": convertStanding(descripteurs[8]),
+            "cave": int(descripteurs[10]),
+            "prix": descripteurs[11],
+        }
 
-    #   def categorize(self):
 
-    #   def normalize(self): -> choisit une norme, un quantité atomique, et un poids
-    #   def rememoration(self) -> renvoit une liste de cas similaires au problème cible.
