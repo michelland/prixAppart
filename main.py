@@ -63,9 +63,10 @@ def init_base_cas (root, df):
         print("%s%s" % (pre, node.name))
 
 
-# Renvoi la liste des appartements similaire à l'appartement en paramètre
+# Renvoi l'appartement source le plus similaire à l'appartement cible
 def rememoration(cible, root):
     list_appart_similaires = []
+    appart_similaire = 0
     arrondissement = cible.DESCRIPTEURS["arrondissement"]
     exists = False
     for child in root.children:
@@ -83,8 +84,27 @@ def rememoration(cible, root):
         for child in node_piece.children:
             list_appart_similaires.append(child.name)
 
-    return list_appart_similaires
+    if len(list_appart_similaires) != 0:
+        index_source = 0
+        delta_source = 10000000
+        for i in range(len(list_appart_similaires)):
+            delta = computeDelta(list_appart_similaires[i], cible)
+            if abs(delta) <= delta_source:
+                index_source = i
+                delta_source = delta
+        appart_similaire = list_appart_similaires[index_source]
 
+    return appart_similaire
+
+def computeDelta(source, cible):
+    src = source.DESCRIPTEURS
+    target = cible.DESCRIPTEURS
+    delta = 0
+    for a in POIDS.keys():
+        sum = (target[a] - src[a]) * POIDS[a]
+        print(sum)
+        delta += sum
+    return delta
 
 # Calcul le delta de prix entre l'appartement cible et l'appartement source
 def adaptation(source, cible):
@@ -133,12 +153,12 @@ def main():
     cible = Appartement(descripteurs)
 
     # Rememoration et adaptation
-    list = rememoration(cible, root)
-    print(list)
-    if len(list) == 0:
+    source = rememoration(cible, root)
+    print(source)
+    if source == 0:
         print("Aucun appartement comparable trouvé")
     else:
-        print(f"Le prix de l'appartement est estimé à {adaptation(list[0], cible)}€")
+        print(f"Le prix de l'appartement est estimé à {adaptation(source, cible)}€")
 
 
 if __name__ == '__main__':
