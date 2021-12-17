@@ -6,17 +6,14 @@ from anytree.exporter import DotExporter
 # import graphviz
 from appartement import Appartement
 
-# Utilisateur, Debug
-MODE = "Debug"
-
 APPARTEMENT_CIBLE = {
             "arrondissement": 8,
             "nb_pieces": 2,
             "meuble": 0,
             "balcon": 1,
-            "etage": 0,
+            "etage": 4,
             "parking": 1,
-            "surface": 43,
+            "surface": 30,
             "cuisine_equipe": 1,
             "standing": "Bon",
             "ascenseur" : 1,
@@ -27,7 +24,7 @@ POIDS = {
     "balcon" : 50,
     "etage" : 10,
     "parking" : 50,
-    "surface" : 20,
+    "surface" : 10,
     "cuisine_equipe" : 20,
     "standing" : 100,
     "cave" : 20,
@@ -102,19 +99,12 @@ def computeDelta(source, cible):
     delta = 0
     for a in POIDS.keys():
         sum = (target[a] - src[a]) * POIDS[a]
-        print(sum)
         delta += sum
     return delta
 
 # Calcul le delta de prix entre l'appartement cible et l'appartement source
 def adaptation(source, cible):
-    src = source.DESCRIPTEURS
-    target = cible.DESCRIPTEURS
-    delta = 0
-    for a in POIDS.keys():
-        sum = (target[a] - src[a]) * POIDS[a]
-        print(sum)
-        delta += sum
+    delta = computeDelta(source, cible)
     return source.DESCRIPTEURS["prix"] + delta
 
 
@@ -126,39 +116,23 @@ def main():
     init_base_cas(root, df)
 
     # Création d'un appartement cible
-    if MODE == "Utilisateur":
-        print("Entrer les descripteurs de l'appartement pour obtenir une estimation de son prix")
-        descripteurs = []
-        descripteurs.append(input("Arrondissement : entier de 1 à 9"))
-        descripteurs.append(input("Nombre_pieces : entier de 1 à 7"))
-        descripteurs.append(input("Meuble : 1 ou 0"))
-        descripteurs.append(input("Balcon : entier"))
-        descripteurs.append(input("Etage : entier"))
-        descripteurs.append(input("Parking : 1 ou 0"))
-        descripteurs.append(input("Surface : float"))
-        descripteurs.append(input("Cuisine_equipee : 1 ou 0"))
-        descripteurs.append(input("Standing : Vivable, Moyen, Bon, Tres bon"))
-        descripteurs.append(input("Ascenseur : 1 ou 0"))
-        descripteurs.append(input("Cave : 1 ou 0"))
-        descripteurs.append(0)
-
-    else:
-        descripteurs = [APPARTEMENT_CIBLE["arrondissement"],APPARTEMENT_CIBLE["nb_pieces"],
-                        APPARTEMENT_CIBLE["meuble"],APPARTEMENT_CIBLE["balcon"],
-                        APPARTEMENT_CIBLE["etage"],APPARTEMENT_CIBLE["parking"],
-                        APPARTEMENT_CIBLE["surface"],APPARTEMENT_CIBLE["cuisine_equipe"],
-                        APPARTEMENT_CIBLE["standing"],APPARTEMENT_CIBLE["ascenseur"],
-                        APPARTEMENT_CIBLE["cave"],0]
+    descripteurs = [APPARTEMENT_CIBLE["arrondissement"],APPARTEMENT_CIBLE["nb_pieces"],
+                    APPARTEMENT_CIBLE["meuble"],APPARTEMENT_CIBLE["balcon"],
+                    APPARTEMENT_CIBLE["etage"],APPARTEMENT_CIBLE["parking"],
+                    APPARTEMENT_CIBLE["surface"],APPARTEMENT_CIBLE["cuisine_equipe"],
+                    APPARTEMENT_CIBLE["standing"],APPARTEMENT_CIBLE["ascenseur"],
+                    APPARTEMENT_CIBLE["cave"],0]
 
     cible = Appartement(descripteurs)
 
-    # Rememoration et adaptation
+    # Rememoration
     source = rememoration(cible, root)
-    print(source)
     if source == 0:
         print("Aucun appartement comparable trouvé")
     else:
-        print(f"Le prix de l'appartement est estimé à {adaptation(source, cible)}€")
+        # Adaptation
+        prix = adaptation(source, cible)
+        print(f"Le loyer de l'appartement est estimé à {prix}€ par mois")
 
 
 if __name__ == '__main__':
